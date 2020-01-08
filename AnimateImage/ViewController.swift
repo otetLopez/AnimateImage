@@ -25,15 +25,11 @@ class ViewController: UIViewController {
         let width = imageView.frame.size.width
         let height = imageView.frame.size.height
         let x = imageView.frame.origin.x
-        let y = imageView.frame.origin.y
         
         self.imageView.frame = CGRect(x: x, y: curr_y, width: width, height: height)
         curr_y += 150
-        
-        let guide = view.safeAreaLayoutGuide
-        let heightMax = guide.layoutFrame.size.height
-        print("The max height is \(heightMax)")
-        if curr_y > guide.layoutFrame.size.height {
+
+        if curr_y > view.safeAreaLayoutGuide.layoutFrame.size.height {
             timer.invalidate()
         }
         
