@@ -18,7 +18,7 @@ class ViewController: UIViewController {
     var initialY : CGFloat = 0
     var curr_x : CGFloat = 0
     var curr_y : CGFloat = 0
-    var direction : Int = -1
+    var direction : Bool = false
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view.
@@ -36,6 +36,8 @@ class ViewController: UIViewController {
         let swipeLeft = UISwipeGestureRecognizer(target: self, action: #selector(swiped))
             swipeRight.direction = UISwipeGestureRecognizer.Direction.left
             view.addGestureRecognizer(swipeLeft)
+        
+        //UIView.animateWithDu
     }
     
     @objc func animate() {
@@ -62,26 +64,70 @@ class ViewController: UIViewController {
             timer = Timer.scheduledTimer(timeInterval: 0.1, target: self, selector: #selector(animateClockwise), userInfo: nil, repeats: true)
         case UISwipeGestureRecognizer.Direction.left:
             timer = Timer.scheduledTimer(timeInterval: 0.1, target: self, selector: #selector(animateCounterClockwise), userInfo: nil, repeats: true)
+            //imageView.animateWithDuration()
+    
         default:
             break
         }
     }
     
     @objc func animateCounterClockwise() {
-        print("Swiped left and we are turing Counter Clockwise")
-        let width = imageView.frame.size.width
-        let height = imageView.frame.size.height
-        
-    }
-    
-    @objc func animateClockwise() {
-        
+        //print("Swiped left and we are turing Counter Clockwise")
         let width = imageView.frame.size.width
         let height = imageView.frame.size.height
         
         let maxW = view.safeAreaLayoutGuide.layoutFrame.size.width
         let maxH = view.safeAreaLayoutGuide.layoutFrame.size.height
-        print("Swiped right and we are turing Clockwise with \(maxW) \(maxH).")
+        
+        self.imageView.frame = CGRect(x: curr_x, y: curr_y, width: width, height: height)
+            
+            if curr_y == y {
+                if curr_x != x {
+                    curr_x -= 50
+                    
+                    if curr_x <= x {
+                        curr_x = x
+                    }
+                } else if curr_x == x {
+                    curr_y += 50
+                }
+
+            } else if curr_y == maxH {
+                if curr_x != maxW-50 {
+                    curr_x += 50
+                    if curr_x >= maxW-50 {
+                        curr_x = maxW-50
+                    }
+                } else {
+                    curr_y -= 50
+                }
+                
+            } else {
+                if curr_x == x {
+                    curr_y += 50
+                    if curr_y >= maxH {
+                        curr_y = maxH
+                    }
+                } else {
+                    curr_y -= 50
+                    if curr_y <= y {
+                        curr_y = y
+                    }
+                }
+            }
+            if curr_y >= initialY && curr_x == initialX {
+                self.imageView.frame = CGRect(x: curr_x, y: curr_y, width: width, height: height)
+                timer.invalidate()
+            }
+    }
+    
+    @objc func animateClockwise() {
+        let width = imageView.frame.size.width
+        let height = imageView.frame.size.height
+        
+        let maxW = view.safeAreaLayoutGuide.layoutFrame.size.width
+        let maxH = view.safeAreaLayoutGuide.layoutFrame.size.height
+        //print("Swiped right and we are turing Clockwise with \(maxW) \(maxH).")
       
         self.imageView.frame = CGRect(x: curr_x, y: curr_y, width: width, height: height)
         
@@ -114,7 +160,8 @@ class ViewController: UIViewController {
                 }
             }
         }
-        if curr_y > initialY && curr_x == initialX {
+        if curr_y >= initialY && curr_x == initialX {
+            self.imageView.frame = CGRect(x: curr_x, y: curr_y, width: width, height: height)
             timer.invalidate()
         }
     }
